@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">남준<![CDATA[♡]]>희진</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="man">박남준</string>
+    <string name="woman">이희진</string>
+    <string name="kakao_name">(모바일 청첩장)\n박남준 <![CDATA[♡]]> 이희진님의 결혼식에 당신을 초대합니다 \n<![CDATA[♡]]>\n</string>
+</resources>

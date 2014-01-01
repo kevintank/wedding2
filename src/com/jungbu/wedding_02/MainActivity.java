@@ -1,10 +1,6 @@
 package com.jungbu.wedding_02;
 
- 
- 
-
 import java.util.Calendar;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -201,9 +197,18 @@ public class MainActivity extends Activity {
 	                v.findViewById(R.id.btn_click_photo).setOnClickListener(mPagerListener);
 	                v.findViewById(R.id.btn_click_kakao).setOnClickListener(mPagerListener);
 	            }else{
-	                v = mInflater.inflate(R.layout.inflate_three, null);
-	                v.findViewById(R.id.iv_three).setBackgroundResource(R.drawable.mapdown2); 
+	                 v = mInflater.inflate(R.layout.inflate_three, null);
+	               // v.findViewById(R.id.iv_three).setBackgroundResource(R.drawable.mapdown2); 
 	                //v.findViewById(R.id.btn_click_3).setOnClickListener(mPagerListener);
+	                
+	              /*  ImgViewTouch iv = (ImgViewTouch) v.findViewById(R.id.iv_three);
+	        	    iv.setImageResource(R.drawable.mapdown2);
+	        	 */
+	        	    customImage img =  (customImage) v.findViewById(R.id.iv_three);
+	                img.setMaxZoom(4f);
+	                img.setImageResource(R.drawable.mapdown2);
+
+	                
 	            }
 	             
 	            ((ViewPager)pager).addView(v, 0);

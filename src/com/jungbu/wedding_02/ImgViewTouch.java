@@ -13,298 +13,273 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.ImageView;
 
-public class ImgViewTouch extends ImageView implements OnTouchListener{
+public class ImgViewTouch extends ImageView  implements OnTouchListener{
 
-	private static final String TAG = "ImgViewChild";
-	private static final boolean D = false;
+	   // ����� ����
+    private static final String TAG = "ViewTouchImage";
+     private static final boolean D = false;
+     
+     private Matrix matrix = new Matrix();
+     private Matrix savedMatrix = new Matrix();
+     private Matrix savedMatrix2 = new Matrix();
+     
+     private static final int NONE = 0;
+     private static final int DRAG = 1;
+     private static final int ZOOM = 2;
+     private int mode = NONE;
+     
+     private PointF start = new PointF();
+     private PointF mid = new PointF();
+     private float oldDist = 1f;
+     
+     private static final int WIDTH = 0;
+     private static final int HEIGHT = 1;
+     
+     private boolean isInit = false;
+     
+     public ImgViewTouch(Context context, AttributeSet attrs, int defStyle) {
+         super(context, attrs, defStyle);
+         
+         setOnTouchListener(this);
+         setScaleType(ScaleType.MATRIX);
+     }
 
-	private Matrix matrix;
-	private Matrix savedMatrix;
-	private Matrix savedMatrix2;
-	
-	private Drawable d;
+     public ImgViewTouch(Context context, AttributeSet attrs) {
+         this(context, attrs, 0);
+     }
 
-	private static final int NONE = 0;
-	private static final int DRAG = 1;
-	private static final int ZOOM = 2;
-	private int mode = NONE;
+     public ImgViewTouch(Context context) {
+         this(context, null);
+     }
 
-	private PointF start = new PointF();
-	private PointF mid = new PointF();
-	private float oldDist = 1f;
+     
+     
+     
 
-	private static final int WIDTH = 0;
-	private static final int HEIGHT = 1;
+     @Override
+     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+         if (D) Log.i(TAG, "onLayout");
+         super.onLayout(changed, left, top, right, bottom);
+         if (isInit == false){
+             init();
+             isInit = true;
+         }
+     }
 
-	private boolean isInit = false;
-	
-	/** Constants describing the state of this imageview */
-	private boolean isMoving;
-	private boolean isScaling;
-	private boolean isRestoring;
+     @Override
+     public void setImageBitmap(Bitmap bm) {
+         if (D) Log.i(TAG, "setImageBitmap");
+         super.setImageBitmap(bm);
+         isInit = false;
+         init();
+     }
 
-	public ImgViewTouch(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-		setScaleType(ScaleType.MATRIX);
-		matrix = new Matrix();
-		savedMatrix = new Matrix();
-		savedMatrix2 = new Matrix();
-		
-		setOnTouchListener(this);
-	}
+     @Override
+     public void setImageDrawable(Drawable drawable) {
+         if (D) Log.i(TAG, "setImageDrawable");
+         super.setImageDrawable(drawable);
+         isInit = false;
+         init();
+     }
 
+     @Override
+     public void setImageResource(int resId) {
+         if (D) Log.i(TAG, "setImageResource");
+         super.setImageResource(resId);
+         isInit = false;
+         init();
+     }
 
-	public ImgViewTouch(Context context, AttributeSet attrs) {
-		this(context, attrs, 0);
-	}
+     protected void init() {
+         matrixTurning(matrix, this);
+         setImageMatrix(matrix);
+         setImagePit();
+     }
 
-	public ImgViewTouch(Context context) {
-		this(context, null);
-	}
+     /**
+      * �̹��� ��
+     */
+     public void setImagePit(){
+         
+         // ��Ʈ���� ��
+        float[] value = new float[9];
+         this.matrix.getValues(value);
+         
+         // �� ũ��
+        int width = this.getWidth();
+         int height = this.getHeight();
+         
+         
+         // �̹��� ũ��
+        Drawable d = this.getDrawable();
+         if (d == null)  return;
+        int imageWidth = d.getIntrinsicWidth();
+         int imageHeight = d.getIntrinsicHeight();
+         int scaleWidth = (int) (imageWidth * value[0]);
+         int scaleHeight = (int) (imageHeight * value[4]);
+         
+        // �̹����� �ٱ����� ������ �ʵ���.
 
-	@Override
-	protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-		if (D) Log.i(TAG, "onLayout");
-		d = this.getDrawable();
-		super.onLayout(changed, left, top, right, bottom);
-		if (isInit == false){
-			init();
-			isInit = true;
-		}
-	}
+         value[2] = 0;
+         value[5] = 0;
+         
+         if (imageWidth > width || imageHeight > height){
+             int target = WIDTH;
+             if (imageWidth < imageHeight) target = HEIGHT;
+             
+             if (target == WIDTH) value[0] = value[4] = (float)width / imageWidth;
+             if (target == HEIGHT) value[0] = value[4] = (float)height / imageHeight;
+             
+             scaleWidth = (int) (imageWidth * value[0]);
+             scaleHeight = (int) (imageHeight * value[4]);
+             
+             if (scaleWidth > width) value[0] = value[4] = (float)width / imageWidth;
+             if (scaleHeight > height) value[0] = value[4] = (float)height / imageHeight;
+         }
+         
+         // �׸��� ��� ��ġ�ϵ��� �Ѵ�.
+         scaleWidth = (int) (imageWidth * value[0]);
+         scaleHeight = (int) (imageHeight * value[4]);
+         if (scaleWidth < width){
+             value[2] = (float) width / 2 - (float)scaleWidth / 2;
+         }
+         if (scaleHeight < height){
+             value[5] = (float) height / 2 - (float)scaleHeight / 2;
+         }
+         
+         matrix.setValues(value);
+         
+         setImageMatrix(matrix);
+     }
+     
+     @Override
+     public boolean onTouch(View v, MotionEvent event) {
+         ImageView view = (ImageView) v;
 
-	@Override
-	public void setImageBitmap(Bitmap bm) {
-		if (D) Log.i(TAG, "setImageBitmap");
-		super.setImageBitmap(bm);
-		isInit = false;
-		init();
-	}
+         switch (event.getAction() & MotionEvent.ACTION_MASK) {
+         case MotionEvent.ACTION_DOWN:
+            savedMatrix.set(matrix);
+            start.set(event.getX(), event.getY());
+            mode = DRAG;
+            break;
+         case MotionEvent.ACTION_POINTER_DOWN:
+            oldDist = spacing(event);
+            if (oldDist > 10f) {
+               savedMatrix.set(matrix);
+               midPoint(mid, event);
+               mode = ZOOM;
+            }
+            break;
+        case MotionEvent.ACTION_UP:
 
-	@Override
-	public void setImageResource(int resId) {
-		if (D) Log.i(TAG, "setImageResource");
-		super.setImageResource(resId);
-		d = getDrawable();
-		isInit = false;
-		init();
-	}
+         case MotionEvent.ACTION_POINTER_UP:
+            mode = NONE;
+            break;
+         case MotionEvent.ACTION_MOVE:
+            if (mode == DRAG) {
+               matrix.set(savedMatrix);
+              matrix.postTranslate(event.getX() - start.x, event.getY() - start.y);
 
-	protected void init() {
-		d = this.getDrawable();
-		initImgPos();
-		setImageMatrix(matrix);
-	}
+            }
+            else if (mode == ZOOM) {
+               float newDist = spacing(event);
+               if (newDist > 10f) {
+                  matrix.set(savedMatrix);
+                  float scale = newDist / oldDist;
+                  matrix.postScale(scale, scale, mid.x, mid.y);
+               }
+            }
+            break;
+         }
 
-	/**
-	 * Sets the image in the imageview using the matrix
-	 */
-	public void initImgPos(){
-		
-		float[] value = new float[9];
-		this.matrix.getValues(value);
-		
-		int width = this.getWidth();
-		int height = this.getHeight();
-		
-		if (d == null)  return;
-		int imageWidth = d.getIntrinsicWidth();
-		int imageHeight = d.getIntrinsicHeight();
-		int scaleWidth = (int) (imageWidth * value[0]);
-		int scaleHeight = (int) (imageHeight * value[4]);
+         // ��Ʈ���� �� Ʃ��.
+         matrixTurning(matrix, view);
+         
+         view.setImageMatrix(matrix);
+         
+         return true;
+     }
+     
+     private float spacing(MotionEvent event) {
+        float x = event.getX(0) - event.getX(1);
+        float y = event.getY(0) - event.getY(1);
+        return FloatMath.sqrt(x * x + y * y);
+     }
 
-		if (imageWidth > width || imageHeight > height){
-			
-			float xratio = (float)width / (float)imageWidth;
-			float yratio = (float)height / (float)imageHeight;
-			
-			// Math.min fits the image to the shorter axis. (with letterboxes around)
-			// Math.max fits the image th the longer axis. (with the other axis cropped)
-			value[0] = value[4] = Math.max(xratio, yratio);
-		}
-		
-		scaleWidth = (int) (imageWidth * value[0]);
-		scaleHeight = (int) (imageHeight * value[4]);
-		
-		// align the image to the top left corner
-		value[2] = 0;
-		value[5] = 0;
-		
-		// center the image. it will be aligned to the top left corner otherwise.
-		value[2] = (float) width / 2 - (float)scaleWidth / 2;
-		value[5] = (float) height / 2 - (float)scaleHeight / 2;
+     private void midPoint(PointF point, MotionEvent event) {
+        float x = event.getX(0) + event.getX(1);
+        float y = event.getY(0) + event.getY(1);
+        point.set(x / 2, y / 2);
+     }
+     
+     private void matrixTurning(Matrix matrix, ImageView view){
+         // ��Ʈ���� ��
+        float[] value = new float[9];
+         matrix.getValues(value);
+         float[] savedValue = new float[9];
+         savedMatrix2.getValues(savedValue);
 
-		matrix.setValues(value);
-		setImageMatrix(matrix);
-	}
-
-	@Override
- 
-	public boolean onTouch(View v, MotionEvent event) {
-		
-		if(D) dumpEvent(event);
-
-		switch (event.getAction() & MotionEvent.ACTION_MASK) {
-		case MotionEvent.ACTION_DOWN:
-			savedMatrix.set(matrix);
-			start.set(event.getX(), event.getY());
-			mode = DRAG;
-			break;
-		case MotionEvent.ACTION_POINTER_DOWN:
-			oldDist = spacing(event);
-			if (oldDist > 10f) {
-				savedMatrix.set(matrix);
-				midPoint(mid, event);
-				mode = ZOOM;
-			}
-			break;
-		case MotionEvent.ACTION_UP:
-
-		case MotionEvent.ACTION_POINTER_UP:
-			mode = NONE;
-			restore(matrix);
-			break;
-		case MotionEvent.ACTION_MOVE:
-			if (mode == DRAG) {
-				matrix.set(savedMatrix);
-				matrix.postTranslate(event.getX() - start.x, event.getY() - start.y);
-
-			}
-			else if (mode == ZOOM) {
-				float newDist = spacing(event);
-				if (newDist > 10f) {
-					matrix.set(savedMatrix);
-					float scale = newDist / oldDist;
-					matrix.postScale(scale, scale, mid.x, mid.y);
-				}
-			}
-			break;
-		}
-
-		// Matrix value modification
-		// comment out below 2 lines to remove all restrictions on image transformation.
-		matrixTuning(matrix);
-		setImageMatrix(savedMatrix2);
-
-		return true;
-	}
-
-	private float spacing(MotionEvent event) {
-		float x = event.getX(0) - event.getX(1);
-		float y = event.getY(0) - event.getY(1);
-		return FloatMath.sqrt(x * x + y * y);
-	}
-
-	private void midPoint(PointF point, MotionEvent event) {
-		float x = event.getX(0) + event.getX(1);
-		float y = event.getY(0) + event.getY(1);
-		point.set(x / 2, y / 2);
-	}
-
-	private void matrixTuning(Matrix matrix){
-		float[] value = new float[9];
-		matrix.getValues(value);
-		float[] savedValue = new float[9];
-		savedMatrix2.getValues(savedValue);
-		
-		int width = getWidth();
-		int height = getHeight();
-
-		
-		Drawable d = getDrawable();
-		if (d == null)  return;
-		int imageWidth = d.getIntrinsicWidth();
-		int imageHeight = d.getIntrinsicHeight();
-		int scaleWidth = (int) (imageWidth * value[0]);
-		int scaleHeight = (int) (imageHeight * value[4]);
-
-		// don't let the image go outside
-		if (value[2] < width - scaleWidth)   value[2] = width - scaleWidth;
-		if (value[5] < height - scaleHeight)   value[5] = height - scaleHeight;
-		if (value[2] > 0)   value[2] = 0;
-		if (value[5] > 0)   value[5] = 0;
-
-		// maximum zoom ratio: 2x
-		if (value[0] > 2 || value[4] > 2){
-			value[0] = savedValue[0];
-			value[4] = savedValue[4];
-			value[2] = savedValue[2];
-			value[5] = savedValue[5];
-		}
-
-		// don't let the image become smaller than the screen
-		if (imageWidth > width || imageHeight > height){
-			if (scaleWidth < width && scaleHeight < height){
-				int target = WIDTH;
-				if (imageWidth < imageHeight) target = HEIGHT;
-
-				if (target == WIDTH) value[0] = value[4] = (float)width / imageWidth;
-				if (target == HEIGHT) value[0] = value[4] = (float)height / imageHeight;
-
-				scaleWidth = (int) (imageWidth * value[0]);
-				scaleHeight = (int) (imageHeight * value[4]);
-
-				if (scaleWidth > width) value[0] = value[4] = (float)width / imageWidth;
-				if (scaleHeight > height) value[0] = value[4] = (float)height / imageHeight;
-			}
-		}
-
-		// don't allow scale down under its size
-		else{
-			if (value[0] < 1)   value[0] = 1;
-			if (value[4] < 1)   value[4] = 1;
-		}
-
-		// center the image
-		scaleWidth = (int) (imageWidth * value[0]);
-		scaleHeight = (int) (imageHeight * value[4]);
-		if (scaleWidth < width){
-			value[2] = (float) width / 2 - (float)scaleWidth / 2;
-		}
-		if (scaleHeight < height){
-			value[5] = (float) height / 2 - (float)scaleHeight / 2;
-		}
-
-		matrix.setValues(value);
-		savedMatrix2.set(matrix);
-	}
-	
-	/** Gives animation effect after touchscreen event,
-	 * puts the image back into the screen,
-	 * limits max zoom at specific ratio. */
-	private void restore(Matrix m) {
-		
-		setImageMatrix(matrix);
-	}
-	
-	/** Show an event in the LogCat view, for debugging */
-	private void dumpEvent(MotionEvent event) {
-		String names[] = { "DOWN" , "UP" , "MOVE" , "CANCEL" , "OUTSIDE" ,
-				"POINTER_DOWN" , "POINTER_UP" , "7?" , "8?" , "9?" };
-		StringBuilder sb = new StringBuilder();
-		int action = event.getAction();
-		int actionCode = action & MotionEvent.ACTION_MASK;
-		sb.append("event ACTION_" ).append(names[actionCode]);
-		if (actionCode == MotionEvent.ACTION_POINTER_DOWN
-				|| actionCode == MotionEvent.ACTION_POINTER_UP) {
-			sb.append("(pid " ).append(
-					action >> MotionEvent.ACTION_POINTER_ID_SHIFT);
-			sb.append(")" );
-		}
-		sb.append("[" );
-		for (int i = 0; i < event.getPointerCount(); i++) {
-			sb.append("#" ).append(i);
-			sb.append("(pid " ).append(event.getPointerId(i));
-			sb.append(")=" ).append((int) event.getX(i));
-			sb.append("," ).append((int) event.getY(i));
-			if (i + 1 < event.getPointerCount())
-				sb.append(";" );
-		}
-		sb.append("]" );
-		Log.d(TAG, sb.toString());
-	}
-
-
-
+         // �� ũ��
+        int width = view.getWidth();
+         int height = view.getHeight();
+         
+         // �̹��� ũ��
+        Drawable d = view.getDrawable();
+         if (d == null)  return;
+         int imageWidth = d.getIntrinsicWidth();
+         int imageHeight = d.getIntrinsicHeight();
+         int scaleWidth = (int) (imageWidth * value[0]);
+         int scaleHeight = (int) (imageHeight * value[4]);
+         
+         // �̹����� �ٱ����� ������ �ʵ���.
+         if (value[2] < width - scaleWidth)   value[2] = width - scaleWidth;
+         if (value[5] < height - scaleHeight)   value[5] = height - scaleHeight;
+         if (value[2] > 0)   value[2] = 0;
+         if (value[5] > 0)   value[5] = 0;
+         
+         // 10�� �̻� Ȯ�� ���� �ʵ���
+        if (value[0] > 10 || value[4] > 10){
+             value[0] = savedValue[0];
+             value[4] = savedValue[4];
+             value[2] = savedValue[2];
+             value[5] = savedValue[5];
+         }
+         
+         // ȭ�麸�� �۰� ��� ���� �ʵ���
+        if (imageWidth > width || imageHeight > height){
+             if (scaleWidth < width && scaleHeight < height){
+                 int target = WIDTH;
+                 if (imageWidth < imageHeight) target = HEIGHT;
+                 
+                 if (target == WIDTH) value[0] = value[4] = (float)width / imageWidth;
+                 if (target == HEIGHT) value[0] = value[4] = (float)height / imageHeight;
+                 
+                 scaleWidth = (int) (imageWidth * value[0]);
+                 scaleHeight = (int) (imageHeight * value[4]);
+                 
+                 if (scaleWidth > width) value[0] = value[4] = (float)width / imageWidth;
+                 if (scaleHeight > height) value[0] = value[4] = (float)height / imageHeight;
+             }
+         }
+         
+         // ����� ���� ����� ���� ũ�⺸�� �۰� ���� �ʵ���
+        else{
+             if (value[0] < 1)   value[0] = 1;
+             if (value[4] < 1)   value[4] = 1;
+         }
+         
+         // �׸��� ��� ��ġ�ϵ��� �Ѵ�.
+         scaleWidth = (int) (imageWidth * value[0]);
+         scaleHeight = (int) (imageHeight * value[4]);
+         if (scaleWidth < width){
+             value[2] = (float) width / 2 - (float)scaleWidth / 2;
+         }
+         if (scaleHeight < height){
+             value[5] = (float) height / 2 - (float)scaleHeight / 2;
+         }
+         
+         matrix.setValues(value);
+         savedMatrix2.set(matrix);
+     }
 
 }

@@ -25,6 +25,10 @@ public class MainActivity extends Activity {
 	private KaKaoFriend mKaKao;
 	private static MediaPlayer mp;
 	private int status = 0; 
+	//생일을 적는다.
+	private int mYear = 2014;
+	private int mMonth = 2;
+	private int mDay = 16;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -225,9 +229,9 @@ public class MainActivity extends Activity {
 	private long getDay() {
 
 		Calendar thatDay = Calendar.getInstance();
-		thatDay.set(Calendar.DAY_OF_MONTH, 16);
-		thatDay.set(Calendar.MONTH, 2); // 0-11 so 1 less 월은 0 부터 11까지
-		thatDay.set(Calendar.YEAR, 2014);
+		thatDay.set(Calendar.DAY_OF_MONTH, mDay);
+		thatDay.set(Calendar.MONTH, mMonth-1); // month는 0부터 시작 하므로 -1해준다.
+		thatDay.set(Calendar.YEAR, mYear);
 		Calendar today = Calendar.getInstance();
 		long diff = thatDay.getTimeInMillis() - today.getTimeInMillis();
 

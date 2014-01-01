@@ -17,19 +17,19 @@
         <TextView 
             android:layout_width="wrap_content"
 	    	android:layout_height="0dp"
-	    	android:layout_weight="0.71"
+	    	android:layout_weight="0.68"
             />
 	    <TextView 
 	        android:id="@+id/cntdown"
 	        android:layout_width="50dp"
 	    	android:layout_height="0dp"
 	    	android:layout_weight="3"
-	    	android:layout_marginLeft="170dp"
+	    	android:layout_marginLeft="160dp"
 	    	android:textSize="28sp"
-	    	android:textColor="#FAFAD2"
+	    	android:textColor="@color/light_font"
 	    	android:textStyle="bold"
 	    	android:gravity="center_horizontal"
-	    	android:text="9"/>
+        	android:text="9"/>
 	    
     </LinearLayout>
 

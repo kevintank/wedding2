@@ -26,7 +26,7 @@
 	    	android:layout_weight="3"
 	    	android:layout_marginLeft="160dp"
 	    	android:textSize="28sp"
-	    	android:textColor="@color/light_font"
+	    	android:textColor="#3c3c3c"
 	    	android:textStyle="bold"
 	    	android:gravity="center_horizontal"
         	android:text="9"/>

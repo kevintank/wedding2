@@ -4,6 +4,7 @@ import java.util.Calendar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
@@ -70,9 +71,11 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
-		super.onDestroy();
+		
 		mp.stop();
 		mp.release();
+		
+		super.onDestroy();
 	}
 	
 	
@@ -83,7 +86,7 @@ public class MainActivity extends Activity {
 		
 		 
 		//if(mp.isPlaying())
-		            //  mp.pause();
+		  //          mp.pause();
 		
 	}
 	
@@ -185,7 +188,7 @@ public class MainActivity extends Activity {
 	                v = mInflater.inflate(R.layout.inflate_one, null);
 	                v.findViewById(R.id.iv_one).setBackgroundResource(R.drawable.scene1);
 	                TextView tv = (TextView)v.findViewById(R.id.cntdown);
-	                
+	                tv.setTypeface(Typeface.createFromAsset(getAssets(), "Frutiger55Roman.ttf"));
 	                long d = getDay();
 	                tv.setText(String.valueOf(d));
 	                

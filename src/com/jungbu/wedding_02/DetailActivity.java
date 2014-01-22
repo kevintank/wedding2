@@ -61,7 +61,7 @@ import android.widget.Toast;
 public class DetailActivity extends FragmentActivity  {
 
 	    private ViewPager viewPager;
-	    private static int mCnt = 10;
+	    private static int mCnt = 9;
 	    
 	    
 	    HorizontalScrollView hv;

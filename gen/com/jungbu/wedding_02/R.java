@@ -36,17 +36,16 @@ public final class R {
         public static final int kakao=0x7f020006;
         public static final int mapdown2=0x7f020007;
         public static final int p1=0x7f020008;
-        public static final int p10=0x7f020009;
-        public static final int p2=0x7f02000a;
-        public static final int p3=0x7f02000b;
-        public static final int p4=0x7f02000c;
-        public static final int p5=0x7f02000d;
-        public static final int p6=0x7f02000e;
-        public static final int p7=0x7f02000f;
-        public static final int p8=0x7f020010;
-        public static final int p9=0x7f020011;
-        public static final int scene1=0x7f020012;
-        public static final int scene2=0x7f020013;
+        public static final int p2=0x7f020009;
+        public static final int p3=0x7f02000a;
+        public static final int p4=0x7f02000b;
+        public static final int p5=0x7f02000c;
+        public static final int p6=0x7f02000d;
+        public static final int p7=0x7f02000e;
+        public static final int p8=0x7f02000f;
+        public static final int p9=0x7f020010;
+        public static final int scene1=0x7f020011;
+        public static final int scene2=0x7f020012;
     }
     public static final class id {
         public static final int action_settings=0x7f0a000b;

@@ -93,6 +93,10 @@ public class DetailActivity extends FragmentActivity  {
 	    }
 	    
 	  
+	    /**
+	     * 꼼 메모리를 해제해 주세요 
+	     * 
+	     */
 	    protected void onDestroy() {
 	   
 	     	

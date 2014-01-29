@@ -1,6 +1,9 @@
 package com.jungbu.wedding_02;
 
 import java.util.Calendar;
+
+import org.androidannotations.annotations.ViewById;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -18,7 +21,7 @@ import android.widget.TextView;
 public class MainActivity extends Activity {
 
 	private ViewPager mPager;
-	ImageView countImageView = null;  
+ 	ImageView countImageView = null;  
 	private KaKaoFriend mKaKao;
 	private static MediaPlayer mp;
 	private int status = 0; 
@@ -32,12 +35,12 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		 
 		mPager = (ViewPager)findViewById(R.id.view_pager);
 		mPager.setAdapter(new PagerAdapterClass(getApplicationContext()));
 		
-		countImageView = (ImageView)findViewById(R.id.imageView1);
+		 countImageView = (ImageView)findViewById(R.id.imageView1);
 		
-		 
 	    mPager.setOnPageChangeListener(new OnPageChangeListener() {
 		    
 			public void onPageSelected(int position) {

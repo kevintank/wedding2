@@ -25,7 +25,7 @@ public class MainActivity extends Activity {
 	private KaKaoFriend mKaKao;
 	private static MediaPlayer mp;
 	private int status = 0; 
-	//생일을 적는다.
+	//생일을 적는다.  알겠습니까...
 	private int mYear = 2014;
 	private int mMonth = 2;
 	private int mDay = 16;

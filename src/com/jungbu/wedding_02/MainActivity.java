@@ -26,7 +26,7 @@ public class MainActivity extends Activity {
 	private static MediaPlayer mp;
 	private int status = 0; 
 	//생일을 적는다.
-	private int mYear = 2014;
+	private int mYear = 2014;  //year
 	private int mMonth = 2;
 	private int mDay = 16;
 	

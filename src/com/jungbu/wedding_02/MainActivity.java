@@ -27,8 +27,8 @@ public class MainActivity extends Activity {
 	private int status = 0; 
 	//생일을 적는다.
 	private int mYear = 2014;  //year
-	private int mMonth = 2;
-	private int mDay = 16;
+	private int mMonth = 2;  //month
+	private int mDay = 16;  //day
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

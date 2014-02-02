@@ -25,16 +25,13 @@ public class MainActivity extends Activity {
 	private KaKaoFriend mKaKao;
 	private static MediaPlayer mp;
 	private int status = 0; 
-<<<<<<< HEAD
+ 
 	//생일을 적는다.  알겠습니까... 하나더 추가 하였다
-	
-	private int mYear = 2014;
-=======
-	//생일을 적는다.
+ 
 	private int mYear = 2014;  //year
->>>>>>> master
-	private int mMonth = 2;
-	private int mDay = 16;
+	private int mMonth = 2;  //month
+	private int mDay = 16;  //day
+ 
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
